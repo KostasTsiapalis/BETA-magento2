@@ -23,6 +23,5 @@ class UpgradeSchema implements UpgradeSchemaInterface
             ];
             $connection->addColumn($setup->getTable('blueacorn_training_entity'), 'type', $column);
         }
-
     }
 }
