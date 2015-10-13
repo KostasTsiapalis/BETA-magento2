@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
+    <preference for="BlueAcorn\Repository\Api\ExampleRepositoryInterface" type="BlueAcorn\Repository\Model\ExampleRepository"/>
+    <preference for="BlueAcorn\Repository\Api\Data\ExampleInterface" type="BlueAcorn\Repository\Model\Example"/>
+    <preference for="BlueAcorn\Repository\Api\Data\ExampleSearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
+</config>
