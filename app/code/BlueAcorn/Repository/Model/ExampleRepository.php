@@ -51,6 +51,17 @@ class ExampleRepository implements ExampleRepositoryInterface
         return $searchResults;
     }
 
+    public function get($id)
+    {
+        $exampleModel = $this->exampleFactory->create()->load($id);
+        $dataObject = $this->exampleDataFactory->create();
+        $dataObject->setId($exampleModel->getId());
+        $dataObject->setName($exampleModel->getName());
+        $dataObject->setCreatedAt($exampleModel->getCreatedAt());
+        $dataObject->setModifiedAt($exampleModel->getModifiedAt());
+        return $dataObject;
+    }
+
     protected function applyCriteriaToCollection(
         SearchCriteriaInterface $searchCriteria,
         ExampleCollection $collection

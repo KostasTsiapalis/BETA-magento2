@@ -1,8 +1,9 @@
 <?php
 include('app/bootstrap.php');
 
-$id = 11;
-$url  = 'http://m2.dev/index.php/rest/V1/categories/' . $id;
+$url  = 'http://m2.dev/index.php/rest/V1/exampleRepoData';
+$params = array('id' => '1');
+$url .= '?' . http_build_query($params);
 
 $ch = curl_init();
 curl_setopt($ch,CURLOPT_URL, $url);
