@@ -1,3 +1,7 @@
+/app/code/Magento/*SampleData
+dev/tools/build-sample-data.php
+dev/tests/integration/testsuite/Magento/SampleData
+
 /.buildpath
 /.cache
 /.metadata
