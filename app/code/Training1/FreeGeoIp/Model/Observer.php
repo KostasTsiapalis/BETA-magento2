@@ -8,6 +8,8 @@ use Magento\Framework\Event\ObserverInterface;
 
 class Observer implements ObserverInterface
 {
+    const FREE_GEO_IP_URL = 'freegeoip.net/json/';
+
     protected $_logger = null;
     protected $_curl = null;
     protected $_context = null;
@@ -39,7 +41,7 @@ class Observer implements ObserverInterface
 
     protected function _getAddressData()
     {
-        $url = 'freegeoip.net/json/' . $this->_context->getRemoteAddress()->getRemoteAddress();
+        $url = self::FREE_GEO_IP_URL . $this->_context->getRemoteAddress()->getRemoteAddress();
         $this->_curl->get($url);
         $result = $this->_decoder->decode($this->_curl->getBody());
 
