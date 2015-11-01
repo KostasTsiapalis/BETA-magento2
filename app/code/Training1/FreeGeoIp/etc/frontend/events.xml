@@ -2,6 +2,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
 
     <event name="controller_front_send_response_before">
-        <observer name="logger" instance="Training1\FreeGeoIp\Model\Observer" shared="false" />
+        <observer name="logger" instance="Training1\FreeGeoIp\Observer\LogCountry" shared="false" />
     </event>
+
 </config>
