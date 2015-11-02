@@ -33,6 +33,8 @@ class Specific404Handler implements \Magento\Framework\App\Router\NoRouteHandler
         ) {
             $request->setModuleName('training2')->setControllerName('default')->setActionName('no_route');
             return true;
+        } else {
+            return false;
         }
     }
 }
