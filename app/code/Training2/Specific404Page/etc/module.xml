@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!--
+ @package     Training2\Specific404Page
+ @version     
+ @author      Blue Acorn, Inc. <code@blueacorn.com>
+ @copyright   Copyright © 2015 Blue Acorn, Inc.
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+ <module name="Training2_Specific404Page" setup_version="2.0.0">
+ </module>
+</config>
