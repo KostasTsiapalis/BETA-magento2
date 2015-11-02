@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+ @package     Training2\Specific404Page
+ @version     
+ @author      Blue Acorn, Inc. <code@blueacorn.com>
+ @copyright   Copyright © 2015 Blue Acorn, Inc.
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+ <system>
+  <section id="web">
+   <group id="default">
+    <field id="training2_cms_no_route" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+     <label>Training2 CMS No Route Page</label>
+     <source_model>Magento\Cms\Model\Config\Source\Page</source_model>
+    </field>
+    <field id="training2_no_route" translate="label" type="text" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+     <label>Training2 No-route URL</label>
+    </field>
+   </group>
+  </section>
+ </system>
+</config>
