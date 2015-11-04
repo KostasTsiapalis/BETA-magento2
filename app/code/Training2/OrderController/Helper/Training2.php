@@ -33,12 +33,15 @@ class Training2 extends \Magento\Framework\App\Helper\AbstractHelper {
     /**
      * @param \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
      * @param \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param \Magento\Framework\App\Helper\Context $context
      */
     public function __construct(\Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
-        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
+        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
+        \Magento\Framework\App\Helper\Context $context
     ) {
         $this->_orderRepository = $orderRepository;
         $this->_searchCriteriaBuilder = $searchCriteriaBuilder;
+        parent::__construct($context);
     }
 
     /**
