@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+ @package     Training3\ExchangeRate
+ @version     
+ @author      Blue Acorn, Inc. <code@blueacorn.com>
+ @copyright   Copyright © 2015 Blue Acorn, Inc.
+ -->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+ <body>
+  <referenceContainer name="content">
+   <block class="Training3\ExchangeRate\Block\ExchangeRate" name="training3-exchangerate" template="Training3_ExchangeRate::exchangerate.phtml">
+    <!--<arguments>-->
+     <!--<argument name="path" xsi:type="string">braintree/creditcard/index</argument>-->
+     <!--<argument name="label" xsi:type="string">My Credit Cards</argument>-->
+    <!--</arguments>-->
+   </block>
+  </referenceContainer>
+ </body>
+</page>
