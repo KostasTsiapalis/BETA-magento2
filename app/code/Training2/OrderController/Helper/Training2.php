@@ -13,9 +13,15 @@ use Magento\Sales\Api\Data\OrderItemInterface;
 
 class Training2 extends \Magento\Framework\App\Helper\AbstractHelper {
     /**
-     * @var \Magento\Sales\Api\Data\OrderInterface
+     * @var \Magento\Sales\Api\OrderRepositoryInterface
      */
-    protected $_order;
+    protected $_orderRepository;
+
+    /**
+     * @var \Magento\Framework\Api\SearchCriteriaBuilder
+     */
+    protected $_searchCriteriaBuilder;
+
 
     /**
      * Fields to control data structure of getOrderData return
@@ -25,11 +31,14 @@ class Training2 extends \Magento\Framework\App\Helper\AbstractHelper {
     protected $_itemFields = array(OrderItemInterface::SKU,OrderItemInterface::ITEM_ID,OrderItemInterface::PRICE);
 
     /**
-     * @param \Magento\Sales\Api\Data\OrderInterface $order
+     * @param \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
+     * @param \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
      */
-    public function __construct(\Magento\Sales\Api\Data\OrderInterface $order) {
-
-        $this->_order = $order;
+    public function __construct(\Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
+        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
+    ) {
+        $this->_orderRepository = $orderRepository;
+        $this->_searchCriteriaBuilder = $searchCriteriaBuilder;
     }
 
     /**
@@ -42,19 +51,25 @@ class Training2 extends \Magento\Framework\App\Helper\AbstractHelper {
         $data = array();
 
         // Load order by increment id
-        $this->_order->loadByIncrementId($orderId);
+        $this->_searchCriteriaBuilder->addFilter('increment_id', $orderId);
+        $orders = $this->_orderRepository->getList(
+            $this->_searchCriteriaBuilder->create()
+        )->getItems();
 
         // Check existence of order loaded
-        if ($this->_order->getId()) {
+        if (count($orders)) {
+            $order = reset($orders);
             // Gather order fields
             foreach($this->_orderFields as $field) {
-                $data[$field] = $this->_order->getData($field);
+                $getter = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $field)));
+                $data[$field] = $order->$getter();
             }
 
             // Gather order item fields for each item in order
-            foreach($this->_order->getItemsCollection() as $item) {
+            foreach($order->getItems() as $item) {
                 foreach($this->_itemFields as $field) {
-                    $data['items'][$item->getItemId()][] = $item->getData($field);
+                    $getter = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $field)));
+                    $data['items'][$item->getItemId()][$field] = $item->$getter();
                 }
             }
         }
