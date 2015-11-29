@@ -1,17 +1,17 @@
 <?php
 /**
- * @package     Training2\OrderController
+ * @package     Training3\OrderInfo
  * @version
  * @author      Blue Acorn, Inc. <code@blueacorn.com>
  * @copyright   Copyright © 2015 Blue Acorn, Inc.
  */
 
-namespace Training2\OrderController\Helper;
+namespace Training3\OrderInfo\Helper;
 
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderItemInterface;
 
-class Training2 extends \Magento\Framework\App\Helper\AbstractHelper {
+class Training3 extends \Magento\Framework\App\Helper\AbstractHelper {
     /**
      * @var \Magento\Sales\Api\OrderRepositoryInterface
      */

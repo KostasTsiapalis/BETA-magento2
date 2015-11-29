@@ -1,0 +1,33 @@
+<?php
+/**
+ * @package     Training3\OrderInfo
+ * @version     
+ * @author      Blue Acorn, Inc. <code@blueacorn.com>
+ * @copyright   Copyright © 2015 Blue Acorn, Inc.
+ */
+ ?>
+
+<?php
+/**
+ * @var \Training3\OrderInfo\Block\OrderInfo $this
+ */
+?>
+
+<?php $orderData = $this->getOrderInfo() ?>
+
+<?php if (!$orderData): ?>
+    Order could not be found
+<?php else: ?>
+    <div class="order-info order-status">
+        <div class="status">
+            <span>Order Status: <?php echo $orderData['status']; ?></span>
+        </div>
+        <div class="total">
+            <span>Total: <?php echo $this->helper('Magento\Framework\Pricing\Helper\Data')->currency($orderData['grand_total'],true,false); ?></span>
+        </div>
+        <div class="total-invoiced">
+            <span>Total Invoiced: <?php echo $this->helper('Magento\Framework\Pricing\Helper\Data')->currency($orderData['total_invoiced'],true,false); ?></span>
+        </div>
+    </div>
+<?php endif ?>
+

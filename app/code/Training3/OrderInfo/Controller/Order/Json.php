@@ -1,14 +1,16 @@
 <?php
 /**
- * @package     Training2\OrderController
+ * @package     Training3\OrderInfo
  * @version
  * @author      Blue Acorn, Inc. <code@blueacorn.com>
  * @copyright   Copyright © 2015 Blue Acorn, Inc.
  */
 
-namespace Training2\OrderController\Controller\Order;
+namespace Training3\OrderInfo\Controller\Order;
 
 class Json extends \Magento\Framework\App\Action\Action {
+    const JSON_FLAG = '1';
+
     /**
      * @var \Magento\Framework\App\Action\Context
      */
@@ -20,7 +22,7 @@ class Json extends \Magento\Framework\App\Action\Action {
     protected $_pageFactory;
 
     /**
-     * @var \Training2\OrderController\Helper\Training2
+     * @var \Training3\OrderInfo\Helper\Training3
      */
     protected $_helper;
 
@@ -30,14 +32,19 @@ class Json extends \Magento\Framework\App\Action\Action {
     protected $_jsonEncoder;
 
     /**
+     * @var string
+     */
+    protected $_orderId;
+
+    /**
      * @param \Magento\Framework\App\Action\Context $context
-     * @param \Training2\OrderController\Helper\Training2 $helper
+     * @param \Training3\OrderInfo\Helper\Training3 $helper
      * @param \Magento\Framework\Json\EncoderInterface $encoder
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $pageFactory,
-        \Training2\OrderController\Helper\Training2 $helper,
+        \Training3\OrderInfo\Helper\Training3 $helper,
         \Magento\Framework\Json\EncoderInterface $encoder
 
     ) {
@@ -54,16 +61,37 @@ class Json extends \Magento\Framework\App\Action\Action {
          * Load orderId from request
          * @var array
          */
-        $orderId = $this->getRequest()->getParam('orderId');
+        $this->_orderId = $this->getRequest()->getParam('orderId');
 
+        /**
+         * Load json flag from request
+         * @var string
+         */
+        $json = $this->getRequest()->getParam('json');
+
+        switch ($json) {
+            case self::JSON_FLAG:
+                $page = $this->renderJson();
+                break;
+            default:
+                $page = $this->renderPage();
+        }
+
+        return $page;
+    }
+
+    /**
+     * Render JSON as page result
+     */
+    protected function renderJson() {
         /**
          * @var array
          */
         $orderData = array('response'=>null);
 
         // Load order data associated to the incrementid
-        if ($orderId) {
-            $orderData['response'] = $this->_helper->getOrderData($orderId);
+        if ($this->_orderId) {
+            $orderData['response'] = $this->_helper->getOrderData($this->_orderId);
         } else {
             $orderData = array('response' => 'error');
         }
@@ -71,6 +99,14 @@ class Json extends \Magento\Framework\App\Action\Action {
         // Set response to with JSON string
         $this->getResponse()->representJson($this->_jsonEncoder->encode($orderData));
 
-        return;
+        return null;
+    }
+
+    /**
+     * Render page
+     */
+    protected function renderPage() {
+        $page = $this->_pageFactory->create(false);
+        return $page;
     }
 }
