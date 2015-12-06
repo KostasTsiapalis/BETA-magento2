@@ -6,6 +6,7 @@
  * @copyright   Copyright © 2015 Blue Acorn, Inc.
  */
 namespace Training4\Vendor\Setup;
+
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
