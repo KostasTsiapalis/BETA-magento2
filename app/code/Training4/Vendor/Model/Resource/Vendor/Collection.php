@@ -24,14 +24,13 @@ class Collection extends AbstractCollection
      */
     public function addProductFilter($productId)
     {
-        // Get vendor IDs from link table
-        $connection = $this->getConnection();
-        $select = $connection->select()
-            ->from($this->getTable('training4_vendor2product'), 'vendor_id')
-            ->where('product_id = ?', $productId);
-        $vendorIds = array_map('reset', $connection->fetchAll($select));
+        $this->getSelect()->join(
+            ['link_table' => $this->getTable('training4_vendor2product')],
+            'link_table.vendor_id = main_table.vendor_id',
+            []
+        )->where('link_table.product_id = ?', $productId);
 
         // Add vendor IDs filter
-        return $this->addFieldToFilter('vendor_id', ['in' => $vendorIds]);
+        return $this;
     }
 }
