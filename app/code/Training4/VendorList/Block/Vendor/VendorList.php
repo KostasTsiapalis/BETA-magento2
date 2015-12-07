@@ -35,15 +35,35 @@ class VendorList extends Template
     }
 
     /**
-     * Get vendors for the current product in registry
+     * Get vendors filtered and sorted by user input or defaults
      *
      * @return \Training4\VendorList\Model\Resource\Vendor\Collection|array
      */
     public function getVendors()
     {
-        /** @var \Training4\VendorList\Model\Resource\Vendor\Collection $vendorCollection */
-        return $this->_objectManager->create('\Training4\VendorList\Model\Vendor')
+        /** @var $vendors \Training4\VendorList\Model\Resource\Vendor\Collection */
+        $vendors = $this->_objectManager->create('\Training4\VendorList\Model\Vendor')
             ->getCollection()
-            ->addFieldToSelect('name');
+            ->addFieldToSelect('*');
+
+        /** @var $toolbar \Training4\VendorList\Block\Vendor\VendorList\Toolbar */
+        $toolbar = $this->getChildBlock('vendor.list.toolbar');
+
+        $vendors->setOrder($toolbar->getSortMode(), $toolbar->getSortDir());
+        if ($search = $toolbar->getFilterLike()) {
+            $vendors->addFieldToFilter('name', ['like' => '%' . $search . '%']);
+        }
+
+        return $vendors;
+    }
+
+    /**
+     * Get child toolbar block html
+     *
+     * @return string
+     */
+    public function getToolbarHtml()
+    {
+        return $this->getChildHtml('vendor.list.toolbar');
     }
 }
