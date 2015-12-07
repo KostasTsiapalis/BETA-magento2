@@ -5,7 +5,7 @@
  * @author      Sam Tay @ Blue Acorn, Inc. <code@blueacorn.com>
  * @copyright   Copyright © 2015 Blue Acorn, Inc.
  */
-namespace Training4\Vendor\Block;
+namespace Training4\Vendor\Block\Product\View;
 
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
