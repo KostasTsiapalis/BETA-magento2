@@ -1,0 +1,31 @@
+<?php
+/**
+ * @package     Training5\VendorRepository
+ * @version     0.1.0
+ * @author      Sam Tay @ Blue Acorn, Inc. <code@blueacorn.com>
+ * @copyright   Copyright © 2015 Blue Acorn, Inc.
+ */
+?>
+<?php
+$vendor = $block->getVendor();
+$products = $block->getProducts() ?: [];
+?>
+<div class="vendor">
+    <span class="vendor-id">Vendor ID: <?php echo $vendor->getId() ?></span>
+    <?php if ($products): ?>
+        <div class="vendor-products">
+            Vendor Products:
+            <ul>
+                <?php foreach ($products as $id => $product): ?>
+                <li>
+                    <span data-product-id="<?php echo $id ?>">
+                        <?php echo $id ?>
+                        &emsp;
+                        <?php echo $product->getName() ?>
+                    </span>
+                </li>
+                <?php endforeach ?>
+            </ul>
+        </div>
+    <?php endif ?>
+</div>

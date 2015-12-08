@@ -1,0 +1,49 @@
+<?php
+/**
+ * @package     Training5\VendorRepository
+ * @version     0.1.0
+ * @author      Sam Tay @ Blue Acorn, Inc. <code@blueacorn.com>
+ * @copyright   Copyright © 2015 Blue Acorn, Inc.
+ */
+
+/**
+ * VendorList Toolbar
+ *
+ * @var $block \Training5\VendorRepository\Block\Vendor\VendorList\Toolbar
+ */
+?>
+<div class="toolbar">
+    <form id="vendorlist-toolbar" class="form" action="/training/vendor/listvendor">
+        <label for="<?php echo $block::SORT_MODE_PARAM ?>">
+            <?php echo __('Sort By') ?>
+        </label>
+        <select name="<?php echo $block::SORT_MODE_PARAM ?>">
+            <?php foreach($block->getSortModeOptions() as $name => $label): ?>
+                <option value="<?php echo $name ?>"
+                    <?php if ($block->getSortMode() == $name) {echo 'selected="selected"';} ?>>
+                    <?php echo __($label) ?>
+                </option>
+            <?php endforeach ?>
+        </select>
+
+        <label for="<?php echo $block::SORT_DIR_PARAM ?>">
+            <?php echo __('Sort Direction') ?>
+        </label>
+        <select name="<?php echo $block::SORT_DIR_PARAM ?>">
+            <?php foreach($block->getSortDirOptions() as $name => $label): ?>
+                <option value="<?php echo $name ?>"
+                    <?php if ($block->getSortMode() == $name) {echo 'selected="selected"';} ?>>
+                    <?php echo __($label) ?>
+                </option>
+            <?php endforeach ?>
+        </select>
+
+        <label for="<?php echo $block::FILTER_LIKE_PARAM ?>">
+            <?php echo __('Search') ?>
+        </label>
+        <input type="text" name="<?php echo $block::FILTER_LIKE_PARAM ?>"
+            value="<?php echo $block->getFilterLike() ?>"/>
+
+        <input class="button" type="submit" value="<?php echo __('Submit') ?>"/>
+    </form>
+</div>

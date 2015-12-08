@@ -1,0 +1,26 @@
+<?php
+/**
+ * @package     Training5\VendorRepository
+ * @version     0.1.0
+ * @author      Sam Tay @ Blue Acorn, Inc. <code@blueacorn.com>
+ * @copyright   Copyright © 2015 Blue Acorn, Inc.
+ */
+
+/**
+ * @var $block \Training5\VendorRepository\Block\Vendor\VendorList
+ */
+?>
+<div class="vendors-container">
+    <?php echo $block->getToolbarHtml() ?>
+    <ul>
+        <?php foreach($block->getVendors() as $vendor): ?>
+            <li class="vendor-name">
+                ID: <?php echo $vendor->getId() ?>
+                &emsp;
+                <a href="<?php echo $block->getVendorUrl($vendor->getId()) ?>">
+                    Name: <?php echo $vendor->getName() ?>
+                </a>
+            </li>
+        <?php endforeach ?>
+    </ul>
+</div>
