@@ -5,7 +5,7 @@
  * @author      Sam Tay @ Blue Acorn, Inc. <code@blueacorn.com>
  * @copyright   Copyright © 2015 Blue Acorn, Inc.
  */
-namespace Training5\VendorRepository\Model\Resource;
+namespace Training5\VendorRepository\Model\ResourceModel;
 
 use Training5\VendorRepository\Model\Vendor as VendorModel;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;

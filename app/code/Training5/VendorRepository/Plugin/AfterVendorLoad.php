@@ -15,7 +15,7 @@ class AfterVendorLoad
     protected $_vendorExtensionFactory;
 
     /**
-     * @var \Training5\VendorRepository\Model\Resource\Vendor
+     * @var \Training5\VendorRepository\Model\ResourceModel\Vendor
      */
     protected $_vendorResource;
 
@@ -26,12 +26,12 @@ class AfterVendorLoad
 
     /**
      * @param \Training5\VendorRepository\Api\Data\VendorExtensionFactory $vendorExtensionFactory
-     * @param \Training5\VendorRepository\Model\Resource\Vendor $vendorResource
+     * @param \Training5\VendorRepository\Model\ResourceModel\Vendor $vendorResource
      * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
      */
     public function __construct(
         \Training5\VendorRepository\Api\Data\VendorExtensionFactory $vendorExtensionFactory,
-        \Training5\VendorRepository\Model\Resource\Vendor $vendorResource,
+        \Training5\VendorRepository\Model\ResourceModel\Vendor $vendorResource,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
     ) {
         $this->_vendorExtensionFactory = $vendorExtensionFactory;

@@ -37,11 +37,11 @@ class VendorList extends Template
     /**
      * Get vendors filtered and sorted by user input or defaults
      *
-     * @return \Training5\VendorRepository\Model\Resource\Vendor\Collection|array
+     * @return \Training5\VendorRepository\Model\ResourceModel\Vendor\Collection|array
      */
     public function getVendors()
     {
-        /** @var $vendors \Training5\VendorRepository\Model\Resource\Vendor\Collection */
+        /** @var $vendors \Training5\VendorRepository\Model\ResourceModel\Vendor\Collection */
         $vendors = $this->_objectManager->create('\Training5\VendorRepository\Model\Vendor')
             ->getCollection()
             ->addFieldToSelect('*');

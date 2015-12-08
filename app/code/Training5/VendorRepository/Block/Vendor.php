@@ -68,7 +68,7 @@ class Vendor extends Template
      */
     public function getVendor()
     {
-        /** @var \Training5\VendorRepository\Model\Resource\Vendor\Collection $vendorCollection */
+        /** @var \Training5\VendorRepository\Model\ResourceModel\Vendor\Collection $vendorCollection */
         return $this->_coreRegistry->registry('vendor');
     }
 }

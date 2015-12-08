@@ -5,7 +5,7 @@
  * @author      Sam Tay @ Blue Acorn, Inc. <code@blueacorn.com>
  * @copyright   Copyright © 2015 Blue Acorn, Inc.
  */
-namespace Training5\VendorRepository\Model\Resource\Vendor;
+namespace Training5\VendorRepository\Model\ResourceModel\Vendor;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
@@ -13,7 +13,7 @@ class Collection extends AbstractCollection
 {
     protected function _construct()
     {
-        $this->_init('Training5\VendorRepository\Model\Vendor', 'Training5\VendorRepository\Model\Resource\Vendor');
+        $this->_init('Training5\VendorRepository\Model\Vendor', 'Training5\VendorRepository\Model\ResourceModel\Vendor');
     }
 
     /**

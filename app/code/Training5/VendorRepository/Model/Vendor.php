@@ -14,7 +14,7 @@ class Vendor extends AbstractExtensibleModel implements VendorInterface
 {
     protected function _construct()
     {
-        $this->_init('\Training5\VendorRepository\Model\Resource\Vendor');
+        $this->_init('\Training5\VendorRepository\Model\ResourceModel\Vendor');
     }
 
     /**

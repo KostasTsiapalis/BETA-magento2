@@ -65,7 +65,7 @@ class Vendor extends Template
     /**
      * Get vendors for the current product in registry
      *
-     * @return \Training5\VendorRepository\Model\Resource\Vendor\Collection|array
+     * @return \Training5\VendorRepository\Model\ResourceModel\Vendor\Collection|array
      */
     public function getVendors()
     {
@@ -73,7 +73,7 @@ class Vendor extends Template
             return array();
         }
 
-        /** @var \Training5\VendorRepository\Model\Resource\Vendor\Collection $vendorCollection */
+        /** @var \Training5\VendorRepository\Model\ResourceModel\Vendor\Collection $vendorCollection */
         return $this->_objectManager->create('\Training5\VendorRepository\Model\Vendor')
             ->getCollection()
             ->addFieldToSelect('name')
