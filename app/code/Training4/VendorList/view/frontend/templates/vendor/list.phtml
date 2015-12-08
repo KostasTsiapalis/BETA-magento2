@@ -17,7 +17,9 @@
             <li class="vendor-name">
                 ID: <?php echo $vendor->getId() ?>
                 &emsp;
-                Name: <?php echo $vendor->getName() ?>
+                <a href="<?php echo $block->getVendorUrl($vendor->getId()) ?>">
+                    Name: <?php echo $vendor->getName() ?>
+                </a>
             </li>
         <?php endforeach ?>
     </ul>

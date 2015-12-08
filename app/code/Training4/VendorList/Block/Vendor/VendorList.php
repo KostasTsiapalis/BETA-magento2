@@ -58,6 +58,17 @@ class VendorList extends Template
     }
 
     /**
+     * Get URL for vendor given vendor_id
+     *
+     * @param string $id
+     * @return string
+     */
+    public function getVendorUrl($id = '')
+    {
+        return $this->getUrl('*/*/view', ['id' => $id]);
+    }
+
+    /**
      * Get child toolbar block html
      *
      * @return string
