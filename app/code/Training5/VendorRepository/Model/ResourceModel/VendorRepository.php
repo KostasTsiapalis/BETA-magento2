@@ -82,7 +82,7 @@ class VendorRepository implements VendorRepositoryInterface
             throw new NoSuchEntityException(__('Vendor with id "%1" does not exist.', $id));
         }
         $vendorData = $vendorModel->getData();
-        $products = $vendorModel->getExtensionAttributes()->getProducts();
+        $products = $vendorModel->getProducts();
 
         $vendorDataObject = $this->_vendoryInterfaceFactory->create();
         $this->_dataObjectHelper->populateWithArray(
@@ -118,7 +118,7 @@ class VendorRepository implements VendorRepositoryInterface
         $vendor->setProducts($products);
 
         $vendorModel = $this->_vendorFactory->create(['data' => $vendorData])
-            ->getExtensionAttributes()->setProducts($products)
+            ->setProducts($products)
             ->setId($vendor->getVendorId())
             ->save();
 

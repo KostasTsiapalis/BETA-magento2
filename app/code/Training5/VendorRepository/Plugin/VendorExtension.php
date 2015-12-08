@@ -7,7 +7,7 @@
  */
 namespace Training5\VendorRepository\Plugin;
 
-class AfterVendorLoad
+class VendorExtension
 {
     /**
      * @var \Training5\VendorRepository\Api\Data\VendorExtensionFactory
@@ -37,6 +37,22 @@ class AfterVendorLoad
         $this->_vendorExtensionFactory = $vendorExtensionFactory;
         $this->_vendorResource = $vendorResource;
         $this->_productRepository = $productRepository;
+    }
+
+    /**
+     * Saves associated products via resource model
+     *
+     * @param \Training5\VendorRepository\Model\Vendor $vendor
+     * @return \Training5\VendorRepository\Model\Vendor
+     */
+    public function afterSave(\Training5\VendorRepository\Model\Vendor $vendor)
+    {
+        $productIds = array_map(function($product) {
+            return $product->getId();
+        }, $vendor->getProducts());
+        $this->_vendorResource->saveAssociatedProductIds($vendor, $productIds);
+
+        return $vendor;
     }
 
     /**

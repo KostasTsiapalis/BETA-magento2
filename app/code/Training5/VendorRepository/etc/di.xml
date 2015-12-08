@@ -8,8 +8,13 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <preference for="Training5\VendorRepository\Api\Data\VendorInterface" type="Training5\VendorRepository\Model\Vendor" />
+    <preference for="Training5\VendorRepository\Api\Data\VendorInterface"
+                type="Training5\VendorRepository\Model\Vendor" />
+    <preference for="Training5\VendorRepository\Api\VendorRepositoryInterface"
+                type="Training5\VendorRepository\Model\ResourceModel\VendorRepository" />
+    <preference for="Training5\VendorRepository\Api\Data\VendorSearchResultsInterface"
+                type="Magento\Framework\Api\SearchResults" />
     <type name="Training5\VendorRepository\Model\Vendor">
-        <plugin name="vendorAfterLoad" type="\Training5\VendorRepository\Plugin\AfterVendorLoad"/>
+        <plugin name="vendorExtension" type="\Training5\VendorRepository\Plugin\VendorExtension"/>
     </type>
 </config>
