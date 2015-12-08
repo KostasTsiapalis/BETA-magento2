@@ -17,6 +17,7 @@ class Warranty extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBacke
      */
     public function beforeSave($object)
     {
+        parent::beforeSave($object);
         $attrCode = $this->getAttribute()->getAttributeCode();
         if ($object->hasData($attrCode)) {
             $value = $object->getData($attrCode);
