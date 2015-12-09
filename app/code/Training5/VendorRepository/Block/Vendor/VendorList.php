@@ -13,6 +13,12 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SortOrderBuilder;
 use Training5\VendorRepository\Api\VendorRepositoryInterface;
 
+/**
+ * Class VendorList
+ * This block tests the filtering/ordering on vendor repository
+ *
+ * @package Training5\VendorRepository\Block\Vendor
+ */
 class VendorList extends Template
 {
     /**

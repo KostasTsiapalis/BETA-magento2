@@ -11,6 +11,12 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 
+/**
+ * Class Listvendor
+ * This route tests the repository filtering/sorting
+ *
+ * @package Training5\VendorRepository\Controller\Vendor
+ */
 class Listvendor extends Action
 {
     /**
