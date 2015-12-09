@@ -84,13 +84,13 @@ class Vendor extends AbstractExtensibleModel implements VendorInterface
     /**
      * Get associated products
      *
-     * @return \Magento\Catalog\Api\Data\ProductInterface[]|null
+     * @return \Magento\Catalog\Api\Data\ProductInterface[]
      */
     public function getProducts()
     {
         return $this->getExtensionAttributes()
             ? $this->getExtensionAttributes()->getProducts()
-            : null;
+            : [];
     }
 
     /**
@@ -101,7 +101,9 @@ class Vendor extends AbstractExtensibleModel implements VendorInterface
      */
     public function setProducts(array $products)
     {
-        $this->getExtensionAttributes()->setProducts($products);
+        ($this->getExtensionAttributes())
+            ? $this->getExtensionAttributes()->setProducts($products)
+            : $this->setExtensionAttributes();
         return $this;
     }
 }

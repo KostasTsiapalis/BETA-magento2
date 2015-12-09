@@ -7,54 +7,75 @@
  */
 namespace Training5\VendorRepository\Block\Vendor;
 
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Api\SortOrderBuilder;
+use Training5\VendorRepository\Api\VendorRepositoryInterface;
 
 class VendorList extends Template
 {
     /**
-     * @var \Magento\Framework\ObjectManagerInterface
+     * @var \Magento\Framework\Api\SearchCriteriaBuilder
      */
-    protected $_objectManager;
+    protected $_searchCriteriaBuilder;
+
+    /**
+     * @var \Training5\VendorRepository\Api\VendorRepositoryInterface
+     */
+    protected $_vendorRepository;
+
+    /**
+     * @var \Magento\Framework\Api\SortOrderBuilder
+     */
+    protected $_sortOrderBuilder;
 
     /**
      * Initialize block with context and registry access
      *
-     * @param ObjectManagerInterface $objectManager
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param VendorRepositoryInterface $vendorRepository
+     * @param SortOrderBuilder $sortOrderBuilder
      * @param Context $context
      * @param array $data
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        VendorRepositoryInterface $vendorRepository,
+        SortOrderBuilder $sortOrderBuilder,
         Context $context,
         array $data = []
     ) {
-        $this->_objectManager = $objectManager;
+        $this->_searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->_vendorRepository = $vendorRepository;
+        $this->_sortOrderBuilder = $sortOrderBuilder;
         parent::__construct($context, $data);
     }
 
     /**
      * Get vendors filtered and sorted by user input or defaults
      *
-     * @return \Training5\VendorRepository\Model\ResourceModel\Vendor\Collection|array
+     * @return \Training5\VendorRepository\Api\Data\VendorInterface[]
      */
     public function getVendors()
     {
-        /** @var $vendors \Training5\VendorRepository\Model\ResourceModel\Vendor\Collection */
-        $vendors = $this->_objectManager->create('\Training5\VendorRepository\Model\Vendor')
-            ->getCollection()
-            ->addFieldToSelect('*');
-
-        /** @var $toolbar \Training5\VendorRepository\Block\Vendor\VendorList\Toolbar */
+        /** @var \Training5\VendorRepository\Block\Vendor\VendorList\Toolbar $toolbar */
         $toolbar = $this->getChildBlock('vendor.list.toolbar');
 
-        $vendors->setOrder($toolbar->getSortMode(), $toolbar->getSortDir());
-        if ($search = $toolbar->getFilterLike()) {
-            $vendors->addFieldToFilter('name', ['like' => '%' . $search . '%']);
+        /** @var \Magento\Framework\Api\SortOrder $sortOrder */
+        $sortOrder = $this->_sortOrderBuilder->setField($toolbar->getSortMode())
+            ->setDirection($toolbar->getSortDir())
+            ->create();
+        $this->_searchCriteriaBuilder->addSortOrder($sortOrder);
+        if ($searchQuery = $toolbar->getFilterLike()) {
+            $this->_searchCriteriaBuilder->addFilter(
+                'name',
+                '%' . $searchQuery . '%',
+                'like'
+            );
         }
 
-        return $vendors;
+        return $this->_vendorRepository->getList($this->_searchCriteriaBuilder->create())->getItems();
     }
 
     /**

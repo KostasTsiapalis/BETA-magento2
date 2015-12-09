@@ -48,7 +48,7 @@ interface VendorInterface extends ExtensibleDataInterface
     /**
      * Get associated products
      *
-     * @return \Magento\Catalog\Api\Data\ProductInterface[]|null
+     * @return \Magento\Catalog\Api\Data\ProductInterface[]
      */
     public function getProducts();
 

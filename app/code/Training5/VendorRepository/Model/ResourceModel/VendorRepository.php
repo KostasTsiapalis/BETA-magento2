@@ -10,10 +10,9 @@ namespace Training5\VendorRepository\Model\ResourceModel;
 
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Api\ExtensibleDataObjectConverter;
-use Magento\Framework\Api\Search\FilterGroup;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\InputException;
-use Magento\Framework\Webapi\Exception;
+use Training5\VendorRepository\Api\VendorRepositoryInterface;
 use Training5\VendorRepository\Api\Data\VendorInterface;
 use Training5\VendorRepository\Api\Data\VendorInterfaceFactory;
 use Training5\VendorRepository\Api\Data\VendorSearchResultsInterface;
@@ -109,19 +108,14 @@ class VendorRepository implements VendorRepositoryInterface
         $this->_validate($vendor);
 
         // Get vendor data from $vendor
-        $products = $vendor->getProducts();
-        $vendor->setProducts([]);
         $vendorData = $this->_extensibleDataObjectConverter->toNestedArray(
             $vendor,
             [],
             '\Training5\VendorRepository\Api\Data\VendorInterface'
         );
-        $vendor->setProducts($products);
 
         /** @var VendorModel $vendorModel */
         $vendorModel = $this->_vendorFactory->create(['data' => $vendorData])
-            ->setProducts($products)
-            ->setId($vendor->getVendorId())
             ->save();
 
         return $vendor->setVendorId($vendorModel->getId());
@@ -142,7 +136,9 @@ class VendorRepository implements VendorRepositoryInterface
         $searchResults->setSearchCriteria($searchCriteria);
 
         /** @var VendorCollection $collection */
-        $collection = $this->_vendorFactory->create()->getCollection();
+        $collection = $this->_vendorFactory->create()->getCollection()
+            ->addFieldToSelect('*')
+            ->setFlag('addProducts', true);
         $this->_applyCriteriaToCollection($searchCriteria, $collection);
 
         /** @var VendorInterface[] $vendors */
@@ -198,7 +194,6 @@ class VendorRepository implements VendorRepositoryInterface
     private function _getDataObject(VendorModel $vendorModel)
     {
         $vendorData = $vendorModel->getData();
-        $products = $vendorModel->getProducts();
 
         $vendorDataObject = $this->_vendoryInterfaceFactory->create();
         $this->_dataObjectHelper->populateWithArray(
@@ -206,9 +201,6 @@ class VendorRepository implements VendorRepositoryInterface
             $vendorData,
             '\Magento\Customer\Api\Data\CustomerInterface'
         );
-        $vendorDataObject->setProducts($products)
-            ->setVendorId($vendorModel->getId());
-
         return $vendorDataObject;
     }
 
@@ -288,11 +280,11 @@ class VendorRepository implements VendorRepositoryInterface
      * Apply all paging options to collection
      *
      * @param SearchCriteriaInterface $searchCriteria
-     * @param ExampleCollection $collection
+     * @param VendorCollection $collection
      */
     private function _applySearchCriteriaPagingToCollection(
         SearchCriteriaInterface $searchCriteria,
-        ExampleCollection $collection
+        VendorCollection $collection
     ) {
         $collection->setCurPage($searchCriteria->getCurrentPage());
         $collection->setPageSize($searchCriteria->getPageSize());

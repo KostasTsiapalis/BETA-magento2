@@ -17,4 +17,7 @@
     <type name="Training5\VendorRepository\Model\Vendor">
         <plugin name="vendorExtension" type="\Training5\VendorRepository\Plugin\VendorExtension"/>
     </type>
+    <type name="Training5\VendorRepository\Model\ResourceModel\Vendor\Collection">
+        <plugin name="vendorCollectionExtension" type="\Training5\VendorRepository\Plugin\VendorCollectionExtension"/>
+    </type>
 </config>
