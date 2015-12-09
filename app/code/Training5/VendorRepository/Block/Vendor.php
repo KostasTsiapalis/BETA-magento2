@@ -26,25 +26,17 @@ class Vendor extends Template
     protected $_product;
 
     /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    protected $_objectManager;
-
-    /**
      * Initialize block with context and registry access
      *
-     * @param ObjectManagerInterface $objectManager
      * @param Context $context
      * @param Registry $registry
      * @param array $data
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
         Context $context,
         Registry $registry,
         array $data = []
     ) {
-        $this->_objectManager = $objectManager;
         $this->_coreRegistry = $registry;
         parent::__construct($context, $data);
     }

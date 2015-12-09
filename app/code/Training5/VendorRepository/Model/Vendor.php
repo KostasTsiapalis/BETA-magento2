@@ -65,7 +65,7 @@ class Vendor extends AbstractExtensibleModel implements VendorInterface
      *
      * @return string
      */
-    public function getVendorName()
+    public function getName()
     {
         return $this->getData(VendorInterface::VENDOR_NAME);
     }
@@ -76,9 +76,9 @@ class Vendor extends AbstractExtensibleModel implements VendorInterface
      * @param string $vendorName
      * @return $this
      */
-    public function setVendorName($vendorName)
+    public function setName($vendorName)
     {
-        return $this->setData(VendorInterface::VENDOR_NAME);
+        return $this->setData(VendorInterface::VENDOR_NAME, $vendorName);
     }
 
     /**

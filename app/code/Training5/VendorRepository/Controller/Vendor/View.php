@@ -11,6 +11,7 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Framework\Registry;
+use Training5\VendorRepository\Api\VendorRepositoryInterface;
 
 class View extends Action
 {
@@ -25,17 +26,25 @@ class View extends Action
     protected $_coreRegistry;
 
     /**
+     * @var \Training5\VendorRepository\Api\VendorRepositoryInterface
+     */
+    protected $_vendorRepository;
+
+    /**
      * @param Context $context
      * @param PageFactory $pageFactory
      * @param Registry $registry
+     * @param VendorRepositoryInterface $vendorRepository
      */
     public function __construct(
         Context $context,
         PageFactory $pageFactory,
-        Registry $registry
+        Registry $registry,
+        VendorRepositoryInterface $vendorRepository
     ) {
         $this->_resultPageFactory = $pageFactory;
         $this->_coreRegistry = $registry;
+        $this->_vendorRepository = $vendorRepository;
         parent::__construct($context);
     }
 
@@ -50,8 +59,7 @@ class View extends Action
         }
 
         // Register current requested vendor
-        $vendor = $this->_objectManager->create('\Training5\VendorRepository\Model\Vendor')
-            ->load($id);
+        $vendor = $this->_vendorRepository->load($id);
         $this->_coreRegistry->register('vendor', $vendor);
 
         $resultPage = $this->_resultPageFactory->create();

@@ -35,7 +35,7 @@ interface VendorInterface extends ExtensibleDataInterface
      *
      * @return string
      */
-    public function getVendorName();
+    public function getName();
 
     /**
      * Set vendor name
@@ -43,7 +43,7 @@ interface VendorInterface extends ExtensibleDataInterface
      * @param string $vendorName
      * @return $this
      */
-    public function setVendorName($vendorName);
+    public function setName($vendorName);
 
     /**
      * Get associated products

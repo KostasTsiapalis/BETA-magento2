@@ -176,7 +176,7 @@ class VendorRepository implements VendorRepositoryInterface
     private function _validate(VendorInterface $vendor)
     {
         $exception = new InputException();
-        if (!\Zend_Validate::is(trim($vendor->getVendorName()), 'NotEmpty')) {
+        if (!\Zend_Validate::is(trim($vendor->getName()), 'NotEmpty')) {
             $exception->addError(__(InputException::REQUIRED_FIELD, ['fieldName' => 'name']));
         }
 
@@ -199,7 +199,7 @@ class VendorRepository implements VendorRepositoryInterface
         $this->_dataObjectHelper->populateWithArray(
             $vendorDataObject,
             $vendorData,
-            '\Magento\Customer\Api\Data\CustomerInterface'
+            '\Training5\VendorRepository\Api\Data\VendorInterface'
         );
         return $vendorDataObject;
     }
