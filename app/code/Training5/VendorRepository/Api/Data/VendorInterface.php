@@ -56,6 +56,7 @@ interface VendorInterface extends ExtensibleDataInterface
      * Set associated products
      *
      * @param \Magento\Catalog\Api\Data\ProductInterface[]
+     * @return $this
      */
     public function setProducts(array $products);
 
