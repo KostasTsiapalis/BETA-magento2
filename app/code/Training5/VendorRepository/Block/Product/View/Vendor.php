@@ -7,11 +7,12 @@
  */
 namespace Training5\VendorRepository\Block\Product\View;
 
-use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Catalog\Model\Product;
+use Training5\VendorRepository\Api\VendorRepositoryInterface;
 
 class Vendor extends Template
 {
@@ -26,25 +27,33 @@ class Vendor extends Template
     protected $_product;
 
     /**
-     * @var \Magento\Framework\ObjectManagerInterface
+     * @var \Training5\VendorRepository\Api\VendorRepositoryInterface
      */
-    protected $_objectManager;
+    protected $_vendorRepository;
+
+    /**
+     * @var \Magento\Framework\Api\SearchCriteriaBuilder
+     */
+    protected $_searchCriteriaBuilder;
 
     /**
      * Initialize block with context and registry access
      *
-     * @param ObjectManagerInterface $objectManager
+     * @param VendorRepositoryInterface $vendorRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param Context $context
      * @param Registry $registry
      * @param array $data
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
-        Context $context,
+        VendorRepositoryInterface $vendorRepository,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
         Registry $registry,
+        Context $context,
         array $data = []
     ) {
-        $this->_objectManager = $objectManager;
+        $this->_vendorRepository = $vendorRepository;
+        $this->_searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->_coreRegistry = $registry;
         parent::__construct($context, $data);
     }
@@ -70,13 +79,11 @@ class Vendor extends Template
     public function getVendors()
     {
         if (!$this->getProduct()) {
-            return array();
+            return [];
         }
-
-        /** @var \Training5\VendorRepository\Model\ResourceModel\Vendor\Collection $vendorCollection */
-        return $this->_objectManager->create('\Training5\VendorRepository\Model\Vendor')
-            ->getCollection()
-            ->addFieldToSelect('name')
-            ->addProductFilter($this->getProduct()->getId());
+        $searchCriteria = $this->_searchCriteriaBuilder
+            ->addFilter('product_id', $this->getProduct()->getId())
+            ->create();
+        return $this->_vendorRepository->getList($searchCriteria)->getItems();
     }
 }
