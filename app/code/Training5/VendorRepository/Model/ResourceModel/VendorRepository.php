@@ -8,56 +8,67 @@
 
 namespace Training5\VendorRepository\Model\ResourceModel;
 
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\Api\ExtensibleDataObjectConverter;
+use Magento\Framework\Api\Search\FilterGroup;
+use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Webapi\Exception;
+use Training5\VendorRepository\Api\Data\VendorInterface;
+use Training5\VendorRepository\Api\Data\VendorInterfaceFactory;
+use Training5\VendorRepository\Api\Data\VendorSearchResultsInterfaceFactory;
+use Training5\VendorRepository\Model\ResourceModel\Vendor as VendorResource;
+use Training5\VendorRepository\Model\ResourceModel\Vendor\Collection as VendorCollection;
+use Training5\VendorRepository\Model\Vendor as VendorModel;
+use Training5\VendorRepository\Model\VendorFactory;
 
 class VendorRepository implements VendorRepositoryInterface
 {
     /**
-     * @var \Training5\VendorRepository\Model\VendorFactory
+     * @var VendorFactory
      */
     private $_vendorFactory;
 
     /**
-     * @var \Training5\VendorRepository\Api\Data\VendorInterfaceFactory
+     * @var VendorInterfaceFactory
      */
     private $_vendoryInterfaceFactory;
 
     /**
-     * @var \Training5\VendorRepository\Api\Data\VendorSearchResultsInterfaceFactory
+     * @var VendorSearchResultsInterfaceFactory
      */
     private $_searchResultsFactory;
 
     /**
-     * @var \Magento\Framework\Api\ExtensibleDataObjectConverter
+     * @var ExtensibleDataObjectConverter
      */
     private $_extensibleDataObjectConverter;
 
     /**
-     * @var \Training5\VendorRepository\Model\ResourceModel\Vendor
+     * @var VendorResource
      */
     private $_vendorResource;
 
     /**
-     * @var \Magento\Framework\Api\DataObjectHelper
+     * @var DataObjectHelper
      */
     private $_dataObjectHelper;
 
     /**
-     * @param \Training5\VendorRepository\Model\VendorFactory $vendorFactory
-     * @param Vendor $vendorResource
-     * @param \Training5\VendorRepository\Api\Data\VendorInterfaceFactory $vendorInterfaceFactory
-     * @param \Training5\VendorRepository\Api\Data\VendorSearchResultsInterfaceFactory $searchResultsFactory
-     * @param \Magento\Framework\Api\ExtensibleDataObjectConverter $extensibleDataObjectConverter
-     * @param \Magento\Framework\Api\DataObjectHelper $dataObjectHelper
+     * @param VendorFactory $vendorFactory
+     * @param VendorResource $vendorResource
+     * @param VendorInterfaceFactory $vendorInterfaceFactory
+     * @param VendorSearchResultsInterfaceFactory $searchResultsFactory
+     * @param ExtensibleDataObjectConverter $extensibleDataObjectConverter
+     * @param DataObjectHelper $dataObjectHelper
      */
     public function __construct(
-        \Training5\VendorRepository\Model\VendorFactory $vendorFactory,
-        \Training5\VendorRepository\Model\ResourceModel\Vendor $vendorResource,
-        \Training5\VendorRepository\Api\Data\VendorInterfaceFactory $vendorInterfaceFactory,
-        \Training5\VendorRepository\Api\Data\VendorSearchResultsInterfaceFactory $searchResultsFactory,
-        \Magento\Framework\Api\ExtensibleDataObjectConverter $extensibleDataObjectConverter,
-        \Magento\Framework\Api\DataObjectHelper $dataObjectHelper
+        VendorFactory $vendorFactory,
+        VendorResource $vendorResource,
+        VendorInterfaceFactory $vendorInterfaceFactory,
+        VendorSearchResultsInterfaceFactory $searchResultsFactory,
+        ExtensibleDataObjectConverter $extensibleDataObjectConverter,
+        DataObjectHelper $dataObjectHelper
     ) {
         $this->_vendorFactory = $vendorFactory;
         $this->_vendorResource = $vendorResource;
@@ -72,11 +83,12 @@ class VendorRepository implements VendorRepositoryInterface
      *
      * @api
      * @param int $id
-     * @return \Training5\VendorRepository\Api\Data\VendorInterface
+     * @return VendorInterface
      * @throws NoSuchEntityException
      */
     public function load($id)
     {
+        /** @var VendorModel $vendorModel */
         $vendorModel = $this->_vendorFactory->create()->load($id);
         if (!$vendorModel->getId()) {
             throw new NoSuchEntityException(__('Vendor with id "%1" does not exist.', $id));
@@ -100,12 +112,12 @@ class VendorRepository implements VendorRepositoryInterface
      * Create/update vendor.
      *
      * @api
-     * @param \Training5\VendorRepository\Api\Data\VendorInterface $vendor
-     * @return \Training5\VendorRepository\Api\Data\VendorInterface
+     * @param VendorInterface $vendor
+     * @return VendorInterface
      */
-    public function save(\Training5\VendorRepository\Api\Data\VendorInterface $vendor)
+    public function save(VendorInterface $vendor)
     {
-        $this->validate($vendor);
+        $this->_validate($vendor);
 
         // Get vendor data from $vendor
         $products = $vendor->getProducts();
@@ -117,6 +129,7 @@ class VendorRepository implements VendorRepositoryInterface
         );
         $vendor->setProducts($products);
 
+        /** @var VendorModel $vendorModel */
         $vendorModel = $this->_vendorFactory->create(['data' => $vendorData])
             ->setProducts($products)
             ->setId($vendor->getVendorId())
@@ -129,7 +142,7 @@ class VendorRepository implements VendorRepositoryInterface
      * Retrieve vendors which match a specified criteria.
      *
      * @api
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
+     * @param SearchCriteriaInterface $searchCriteria
      * @return \Training5\VendorRepository\Api\Data\VendorSearchResultsInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -139,7 +152,7 @@ class VendorRepository implements VendorRepositoryInterface
      * Retrieve products associated to a specific vendor
      *
      * @api
-     * @param \Training5\VendorRepository\Api\Data\VendorInterface $vendor
+     * @param VendorInterface $vendor
      * @return int[]
      */
     public function getAssociatedProductIds(\Training5\VendorRepository\Api\Data\VendorInterface $vendor) {}
@@ -147,12 +160,12 @@ class VendorRepository implements VendorRepositoryInterface
     /**
      * Validate data on $vendor object before saving
      *
-     * @param \Training5\VendorRepository\Api\Data\VendorInterface $vendor
+     * @param VendorInterface $vendor
      * @throws InputException
      * @throws \Exception
      * @throws \Zend_Validate_Exception
      */
-    private function validate(\Training5\VendorRepository\Api\Data\VendorInterface $vendor)
+    private function _validate(VendorInterface $vendor)
     {
         $exception = new InputException();
         if (!\Zend_Validate::is(trim($vendor->getVendorName()), 'NotEmpty')) {
