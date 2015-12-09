@@ -16,6 +16,7 @@ use Magento\Framework\Exception\InputException;
 use Magento\Framework\Webapi\Exception;
 use Training5\VendorRepository\Api\Data\VendorInterface;
 use Training5\VendorRepository\Api\Data\VendorInterfaceFactory;
+use Training5\VendorRepository\Api\Data\VendorSearchResultsInterface;
 use Training5\VendorRepository\Api\Data\VendorSearchResultsInterfaceFactory;
 use Training5\VendorRepository\Model\ResourceModel\Vendor as VendorResource;
 use Training5\VendorRepository\Model\ResourceModel\Vendor\Collection as VendorCollection;
@@ -93,19 +94,7 @@ class VendorRepository implements VendorRepositoryInterface
         if (!$vendorModel->getId()) {
             throw new NoSuchEntityException(__('Vendor with id "%1" does not exist.', $id));
         }
-        $vendorData = $vendorModel->getData();
-        $products = $vendorModel->getProducts();
-
-        $vendorDataObject = $this->_vendoryInterfaceFactory->create();
-        $this->_dataObjectHelper->populateWithArray(
-            $vendorDataObject,
-            $vendorData,
-            '\Magento\Customer\Api\Data\CustomerInterface'
-        );
-        $vendorDataObject->setProducts($products)
-            ->setVendorId($vendorModel->getId());
-
-        return $vendorDataObject;
+        return $this->_getDataObject($vendorModel);
     }
 
     /**
@@ -146,16 +135,39 @@ class VendorRepository implements VendorRepositoryInterface
      * @return \Training5\VendorRepository\Api\Data\VendorSearchResultsInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function getList(\Magento\Framework\Api\SearchCriteriaInterface $searchCriteria) {}
+    public function getList(SearchCriteriaInterface $searchCriteria)
+    {
+        /** @var VendorSearchResultsInterface $searchResults */
+        $searchResults = $this->_searchResultsFactory->create();
+        $searchResults->setSearchCriteria($searchCriteria);
+
+        /** @var VendorCollection $collection */
+        $collection = $this->_vendorFactory->create()->getCollection();
+        $this->_applyCriteriaToCollection($searchCriteria, $collection);
+
+        /** @var VendorInterface[] $vendors */
+        $vendors = $this->_convertCollectionToArray($collection);
+
+        $searchResults->setItems($vendors);
+        $searchResults->setTotalCount(count($vendors));
+
+        return $searchResults;
+    }
 
     /**
-     * Retrieve products associated to a specific vendor
+     * Retrieve product ids associated to a specific vendor
+     * Easier than intended because I already have products living on VendorInterface implementation
      *
      * @api
      * @param VendorInterface $vendor
      * @return int[]
      */
-    public function getAssociatedProductIds(\Training5\VendorRepository\Api\Data\VendorInterface $vendor) {}
+    public function getAssociatedProductIds(VendorInterface $vendor)
+    {
+        return array_map(function($product) {
+            return $product->getId();
+        }, $vendor->getProducts());
+    }
 
     /**
      * Validate data on $vendor object before saving
@@ -175,5 +187,110 @@ class VendorRepository implements VendorRepositoryInterface
         if ($exception->wasErrorAdded()) {
             throw $exception;
         }
+    }
+
+    /**
+     * Create data object (preferred VendorInterface implementation) from vendor model
+     *
+     * @param VendorModel $vendorModel
+     * @return mixed
+     */
+    private function _getDataObject(VendorModel $vendorModel)
+    {
+        $vendorData = $vendorModel->getData();
+        $products = $vendorModel->getProducts();
+
+        $vendorDataObject = $this->_vendoryInterfaceFactory->create();
+        $this->_dataObjectHelper->populateWithArray(
+            $vendorDataObject,
+            $vendorData,
+            '\Magento\Customer\Api\Data\CustomerInterface'
+        );
+        $vendorDataObject->setProducts($products)
+            ->setVendorId($vendorModel->getId());
+
+        return $vendorDataObject;
+    }
+
+    /**
+     * Apply all search criteria items to collection
+     *
+     * @param SearchCriteriaInterface $searchCriteria
+     * @param VendorCollection $collection
+     */
+    private function _applyCriteriaToCollection(
+        SearchCriteriaInterface $searchCriteria,
+        VendorCollection $collection
+    ) {
+        foreach(['Filters', 'SortOrders', 'Paging'] as $criteria) {
+            $applyCriteria = '_applySearchCriteria' . $criteria . 'ToCollection';
+            $this->$applyCriteria($searchCriteria, $collection);
+        }
+    }
+
+    /**
+     * Convert collection into array of data objects
+     *
+     * @param VendorCollection $collection
+     * @return array
+     */
+    private function _convertCollectionToArray(VendorCollection $collection)
+    {
+        return array_map(array($this, '_getDataObject'), $collection->getItems());
+    }
+
+    /**
+     * Apply all filter groups to collection
+     *
+     * @param SearchCriteriaInterface $searchCriteria
+     * @param VendorCollection $collection
+     */
+    private function _applySearchCriteriaFiltersToCollection(
+        SearchCriteriaInterface $searchCriteria,
+        VendorCollection $collection
+    ) {
+        foreach($searchCriteria->getFilterGroups() as $filterGroup) {
+            $fields = [];
+            foreach ($filterGroup->getFilters() as $filter) {
+                $condition = $filter->getConditionType() ?: 'eq';
+                $fields[] = ['attribute' => $filter->getField(), $condition => $filter->getValue()];
+            }
+            if ($fields) {
+                $collection->addFieldToFilter($fields);
+            }
+        }
+    }
+
+    /**
+     * Apply all sorting options to collection
+     *
+     * @param SearchCriteriaInterface $searchCriteria
+     * @param VendorCollection $collection
+     */
+    private function _applySearchCriteriaSortOrdersToCollection(
+        SearchCriteriaInterface $searchCriteria,
+        VendorCollection $collection
+    ) {
+        $sortOrders = $searchCriteria->getSortOrders() ?: [];
+        foreach ($sortOrders as $sortOrder) {
+            $collection->addOrder(
+                $sortOrder->getField(),
+                $sortOrder->getDirection()
+            );
+        }
+    }
+
+    /**
+     * Apply all paging options to collection
+     *
+     * @param SearchCriteriaInterface $searchCriteria
+     * @param ExampleCollection $collection
+     */
+    private function _applySearchCriteriaPagingToCollection(
+        SearchCriteriaInterface $searchCriteria,
+        ExampleCollection $collection
+    ) {
+        $collection->setCurPage($searchCriteria->getCurrentPage());
+        $collection->setPageSize($searchCriteria->getPageSize());
     }
 }
