@@ -252,6 +252,10 @@ class VendorRepository implements VendorRepositoryInterface
         foreach($searchCriteria->getFilterGroups() as $filterGroup) {
             $fields = [];
             foreach ($filterGroup->getFilters() as $filter) {
+                if ($filter->getField() == 'product_id') {
+                    $collection->addProductFilter($filter->getValue());
+                    continue;
+                }
                 $condition = $filter->getConditionType() ?: 'eq';
                 $fields[] = ['attribute' => $filter->getField(), $condition => $filter->getValue()];
             }
