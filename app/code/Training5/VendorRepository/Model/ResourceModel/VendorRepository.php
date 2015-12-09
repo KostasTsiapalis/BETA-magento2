@@ -138,7 +138,7 @@ class VendorRepository implements VendorRepositoryInterface
         /** @var VendorCollection $collection */
         $collection = $this->_vendorFactory->create()->getCollection()
             ->addFieldToSelect('*')
-            ->setFlag('addProducts', true);
+            ->setFlag(VendorCollection::ADD_PRODUCTS_FLAG, true);
         $this->_applyCriteriaToCollection($searchCriteria, $collection);
 
         /** @var VendorInterface[] $vendors */

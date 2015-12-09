@@ -7,32 +7,37 @@
  */
 namespace Training5\VendorRepository\Plugin;
 
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Training5\VendorRepository\Api\Data\VendorExtensionFactory;
+use Training5\VendorRepository\Model\ResourceModel\Vendor as VendorResource;
+use Training5\VendorRepository\Model\ResourceModel\Vendor\Collection as VendorCollection;
+
 class VendorCollectionExtension
 {
     /**
-     * @var \Training5\VendorRepository\Api\Data\VendorExtensionFactory
+     * @var VendorExtensionFactory
      */
     protected $_vendorExtensionFactory;
 
     /**
-     * @var \Training5\VendorRepository\Model\ResourceModel\Vendor
+     * @var VendorResource
      */
     protected $_vendorResource;
 
     /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
+     * @var ProductRepositoryInterface
      */
     protected $_productRepository;
 
     /**
-     * @param \Training5\VendorRepository\Api\Data\VendorExtensionFactory $vendorExtensionFactory
-     * @param \Training5\VendorRepository\Model\ResourceModel\Vendor $vendorResource
-     * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
+     * @param VendorExtensionFactory $vendorExtensionFactory
+     * @param VendorResource $vendorResource
+     * @param ProductRepositoryInterface $productRepository
      */
     public function __construct(
-        \Training5\VendorRepository\Api\Data\VendorExtensionFactory $vendorExtensionFactory,
-        \Training5\VendorRepository\Model\ResourceModel\Vendor $vendorResource,
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
+        VendorExtensionFactory $vendorExtensionFactory,
+        VendorResource $vendorResource,
+        ProductRepositoryInterface $productRepository
     ) {
         $this->_vendorExtensionFactory = $vendorExtensionFactory;
         $this->_vendorResource = $vendorResource;
@@ -42,31 +47,31 @@ class VendorCollectionExtension
     /**
      * Loads associated products onto vendor model
      *
-     * @param \Training5\VendorRepository\Model\ResourceModel\Vendor\Collection $subject
+     * @param VendorCollection $subject
      * @return \Training5\VendorRepository\Model\Vendor
      */
-    public function afterLoad(\Training5\VendorRepository\Model\ResourceModel\Vendor\Collection $subject)
+    public function aroundLoad(VendorCollection $subject, \Closure $proceed, $printQuery = false, $logQuery = false)
     {
-        // Get extension object
-        foreach ($subject->getItems() as  ) {
-
+        $skip = $subject->isLoaded() || !$subject->getFlag(VendorCollection::ADD_PRODUCTS_FLAG);
+        $proceed($printQuery, $logQuery);
+        if ($skip) {
+            return $subject;
         }
-
-        $vendorExtension = $vendor->getExtensionAttributes();
-        if ($vendorExtension === null) {
-            $vendorExtension = $this->_vendorExtensionFactory->create();
+        foreach ($subject->getItems() as $vendor) {
+            // Gather products
+            $productIds = $this->_vendorResource->getAssociatedProductIds($vendor);
+            $products = [];
+            foreach($productIds as $id) {
+                $products[$id] = $this->_productRepository->getById($id);
+            }
+            // Set products on extension object
+            $vendorExtension = $vendor->getExtensionAttributes();
+            if ($vendorExtension === null) {
+                $vendorExtension = $this->_vendorExtensionFactory->create();
+            }
+            $vendorExtension->setProducts($products);
+            $vendor->setExtensionAttributes($vendorExtension);
         }
-
-        // Gather associated products
-        $productIds = $this->_vendorResource->getAssociatedProductIds($vendor);
-        $products = [];
-        foreach($productIds as $id) {
-            $products[$id] = $this->_productRepository->getById($id);
-        }
-
-        // Set products on extension object
-        $vendorExtension->setProducts($products);
-        $vendor->setExtensionAttributes($vendorExtension);
-        return $vendor;
+        return $subject;
     }
 }
